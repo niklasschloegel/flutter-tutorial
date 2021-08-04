@@ -1,6 +1,13 @@
+class AnswerData {
+  final String answer;
+  final int score;
+
+  AnswerData(this.answer, this.score);
+}
+
 class QuizData {
-  String question;
-  List<String> answers;
+  final String question;
+  final List<AnswerData> answers;
 
   QuizData(this.question, this.answers);
 }

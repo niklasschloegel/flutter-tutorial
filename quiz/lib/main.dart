@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:quiz/answer.dart';
-import 'package:quiz/quiz_data.dart';
+import 'quiz_data.dart';
+import 'result.dart';
 
-import 'question.dart';
+import 'quiz.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,22 +14,35 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var _questionIndex = 0;
+  var _score = 0;
 
-  var _quizData = [
-    QuizData("What's your favorite color?", ["Red", "Green", "Blue"]),
-    QuizData(
-        "What's your favorite animal?", ["Cat", "Dog", "Bird", "Elephant"]),
-    QuizData("Who won the European Championship of Football in 2021?",
-        ["England", "Germany", "Italy", "Denmark", "Spain"])
+  final _quizData = [
+    QuizData("What's your favorite color?",
+        [AnswerData("Red", 7), AnswerData("Green", 3), AnswerData("Blue", 1)]),
+    QuizData("What's your favorite animal?", [
+      AnswerData("Cat", 1),
+      AnswerData("Dog", 2),
+      AnswerData("Bird", 20),
+      AnswerData("Elephant", 33)
+    ]),
+    QuizData("Who won the European Championship of Football in 2021?", [
+      AnswerData("England", 5),
+      AnswerData("Italy", 1),
+      AnswerData("Denmark", 8),
+      AnswerData("Paraguay", 40),
+      AnswerData("Germany", 3)
+    ])
   ];
 
-  void _answerQuestion() {
+  void _answerQuestion(int score) {
+    _score += score;
+    setState(() => _questionIndex++);
+  }
+
+  void _reset() {
     setState(() {
-      if (_questionIndex + 1 == _quizData.length) {
-        _questionIndex = 0;
-      } else {
-        _questionIndex++;
-      }
+      _score = 0;
+      _questionIndex = 0;
     });
   }
 
@@ -39,15 +53,9 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: Text("Quiz App"),
         ),
-        body: Column(
-          children: [
-            Question(_quizData[_questionIndex].question),
-            ..._quizData[_questionIndex]
-                .answers
-                .map((answer) => Answer(_answerQuestion, answer))
-                .toList()
-          ],
-        ),
+        body: _questionIndex < _quizData.length
+            ? Quiz(_quizData, _answerQuestion, _questionIndex)
+            : Result(_score, _reset),
       ),
     );
   }
