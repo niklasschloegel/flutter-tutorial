@@ -35,6 +35,34 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
+      darkTheme: ThemeData(
+        primarySwatch: Colors.indigo,
+        accentColor: Colors.indigo.shade300,
+        brightness: Brightness.dark,
+        fontFamily: GoogleFonts.quicksand().fontFamily,
+        textTheme: GoogleFonts.quicksandTextTheme()
+            .apply(
+              bodyColor: Colors.white,
+              displayColor: Colors.white,
+            )
+            .copyWith(
+                headline6: GoogleFonts.openSans(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                subtitle2: GoogleFonts.quicksand().apply(color: Colors.yellow)),
+        appBarTheme: AppBarTheme(
+          textTheme: GoogleFonts.openSansTextTheme(
+            ThemeData.dark().textTheme.copyWith(
+                  headline6: GoogleFonts.openSans(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+          ),
+        ),
+      ),
+      themeMode: ThemeMode.system,
       home: MyHomePage(),
     );
   }

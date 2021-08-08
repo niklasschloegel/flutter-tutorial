@@ -25,7 +25,7 @@ class Chart extends StatelessWidget {
       }
 
       return DailySpending(weekDayShort, totalSum);
-    });
+    }).reversed.toList();
   }
 
   double get totalSpending =>
