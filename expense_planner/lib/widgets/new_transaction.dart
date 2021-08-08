@@ -47,12 +47,7 @@ class _NewTransactionState extends State<NewTransaction> {
               controller: amountController,
             ),
             TextButton(
-              child: Text(
-                "Add Transaction",
-                style: TextStyle(
-                  color: Colors.purple,
-                ),
-              ),
+              child: Text("Add Transaction"),
               onPressed: _submitData,
             ),
           ],
