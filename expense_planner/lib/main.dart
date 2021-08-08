@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:uuid/uuid.dart';
 
 import 'models/transaction.dart';
+import 'widgets/chart.dart';
 import 'widgets/transaction_list.dart';
 
 void main() => runApp(MyApp());
@@ -46,19 +47,25 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransactions = [
-    // Transaction(
-    //   "t1",
-    //   "New Shoes",
-    //   69.99,
-    //   DateTime.now(),
-    // ),
-    // Transaction(
-    //   "t2",
-    //   "Weekly Groceries",
-    //   16.54,
-    //   DateTime.now(),
-    // )
+    Transaction(
+      "t1",
+      "New Shoes",
+      69.99,
+      DateTime.now(),
+    ),
+    Transaction(
+      "t2",
+      "Weekly Groceries",
+      16.54,
+      DateTime.now(),
+    )
   ];
+
+  List<Transaction> get _recentTransactions => _userTransactions
+      .where((tx) => tx.date.isAfter(
+            DateTime.now().subtract(Duration(days: 7)),
+          ))
+      .toList();
 
   void _addNewTransaction(String title, double amount) {
     final newTx = Transaction(Uuid().v1(), title, amount, DateTime.now());
@@ -89,13 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              width: double.infinity,
-              alignment: Alignment.center,
-              child: Card(
-                child: Text("CHART!"),
-              ),
-            ),
+            Chart(_recentTransactions),
             TransactionList(_userTransactions),
           ],
         ),
