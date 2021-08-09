@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class NewTransaction extends StatefulWidget {
   final Function addTx;
@@ -11,8 +12,8 @@ class NewTransaction extends StatefulWidget {
 
 class _NewTransactionState extends State<NewTransaction> {
   final titleController = TextEditingController();
-
   final amountController = TextEditingController();
+  DateTime? _dateTime;
 
   void _submitData() {
     final enteredTitle = titleController.text;
@@ -20,15 +21,33 @@ class _NewTransactionState extends State<NewTransaction> {
 
     if (enteredTitle.isEmpty || enteredAmount <= 0) return;
 
-    widget.addTx(enteredTitle, enteredAmount);
+    widget.addTx(enteredTitle, enteredAmount,
+        _dateTime == null ? DateTime.now() : _dateTime);
 
     Navigator.of(context).pop();
+  }
+
+  void _presentDatePicker() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.fromMicrosecondsSinceEpoch(0),
+      lastDate: DateTime.now(),
+    ).then((value) {
+      if (value == null) return;
+      setState(() => _dateTime = value);
+    });
+  }
+
+  String get _dateTimeString {
+    var date = _dateTime;
+    return date == null ? 'No Date Chosen!' : DateFormat.yMd().format(date);
   }
 
   Color _highlightColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.light
         ? Theme.of(context).primaryColor
-        : Colors.white;
+        : Theme.of(context).colorScheme.secondary;
   }
 
   UnderlineInputBorder _inputBorder(BuildContext context) {
@@ -63,15 +82,30 @@ class _NewTransactionState extends State<NewTransaction> {
               keyboardType: TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              onSubmitted: (_) => _submitData(),
               decoration: _decoration(context, "Amount"),
               controller: amountController,
             ),
-            TextButton(
+            Container(
+              height: 70,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(_dateTimeString),
+                  TextButton(
+                    style: ButtonStyle(
+                        foregroundColor: MaterialStateProperty.all(
+                            _highlightColor(context))),
+                    child: Text('Choose Date',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        )),
+                    onPressed: _presentDatePicker,
+                  ),
+                ],
+              ),
+            ),
+            ElevatedButton(
               child: Text("Add Transaction"),
-              style: ButtonStyle(
-                  foregroundColor:
-                      MaterialStateProperty.all(_highlightColor(context))),
               onPressed: _submitData,
             ),
           ],
