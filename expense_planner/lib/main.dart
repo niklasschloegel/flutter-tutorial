@@ -100,6 +100,10 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() => _userTransactions.add(newTx));
   }
 
+  void _deleteTransaction(Transaction tx) {
+    setState(() => _userTransactions.remove(tx));
+  }
+
   void _startAddNewTransaction(BuildContext ctx) {
     showModalBottomSheet(
       context: ctx,
@@ -125,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           children: [
             Chart(_recentTransactions),
-            TransactionList(_userTransactions),
+            TransactionList(_userTransactions, _deleteTransaction),
           ],
         ),
       ),
