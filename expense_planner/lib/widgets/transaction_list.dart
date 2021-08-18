@@ -40,7 +40,7 @@ class TransactionList extends StatelessWidget {
                   elevation: 5,
                   margin: EdgeInsets.symmetric(
                     vertical: 8,
-                    horizontal: 5,
+                    horizontal: 14,
                   ),
                   child: Dismissible(
                     key: Key(tx.id),
