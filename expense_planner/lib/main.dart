@@ -20,6 +20,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.indigo,
         accentColor: Colors.pink,
+        backgroundColor: Colors.white,
+        colorScheme: ColorScheme.light().copyWith(onBackground: Colors.black),
         fontFamily: GoogleFonts.quicksand().fontFamily,
         textTheme: GoogleFonts.quicksandTextTheme().copyWith(
           headline6: GoogleFonts.openSans(
@@ -42,6 +44,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.indigo,
         accentColor: Colors.indigo.shade300,
         backgroundColor: Colors.grey.shade900,
+        colorScheme: ColorScheme.dark().copyWith(onBackground: Colors.white),
         brightness: Brightness.dark,
         fontFamily: GoogleFonts.quicksand().fontFamily,
         textTheme: GoogleFonts.quicksandTextTheme()
