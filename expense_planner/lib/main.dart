@@ -83,13 +83,13 @@ class _MyHomePageState extends State<MyHomePage> {
       "t1",
       "New Shoes",
       69.99,
-      DateTime.now(),
+      DateTime.now().subtract(Duration(days: 2)),
     ),
     Transaction(
       "t2",
       "Weekly Groceries",
       16.54,
-      DateTime.now(),
+      DateTime.now().subtract(Duration(days: 4)),
     )
   ];
 
@@ -122,8 +122,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final _mediaQuery = MediaQuery.of(context);
-    final isLandscape = _mediaQuery.orientation == Orientation.landscape;
-    final deviceHeight = _mediaQuery.size.height;
+    final _isLandscape = _mediaQuery.orientation == Orientation.landscape;
+    final _deviceHeight = _mediaQuery.size.height;
 
     final _title = Text(
       "Personal Expenses",
@@ -132,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
 
-    final appBar = AppBar(
+    final _appBar = AppBar(
       title: _title,
       actions: [
         IconButton(
@@ -142,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ],
     );
 
-    final iOSNavBar = CupertinoNavigationBar(
+    final _iOSNavBar = CupertinoNavigationBar(
       middle: _title,
       backgroundColor: Theme.of(context).colorScheme.background,
       trailing: Row(
@@ -155,71 +155,77 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
 
-    final txListWidget = Container(
-      height: (deviceHeight -
-              appBar.preferredSize.height -
+    final _txListWidget = Container(
+      height: (_deviceHeight -
+              _appBar.preferredSize.height -
               _mediaQuery.padding.top) *
           0.7,
       child: TransactionList(_userTransactions, _deleteTransaction),
     );
 
-    final body = SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
+    List<Widget> _buildLanscapeContent() {
+      return [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (isLandscape)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    _showChart ? "Show List" : "Show Chart",
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  Switch.adaptive(
-                    value: _showChart,
-                    onChanged: (value) {
-                      setState(() => _showChart = value);
-                    },
-                  ),
-                ],
-              ),
-            if (!isLandscape)
-              Container(
-                height: (deviceHeight -
-                        appBar.preferredSize.height -
-                        _mediaQuery.padding.top) *
-                    0.3,
-                child: Chart(_recentTransactions),
-              ),
-            if (!isLandscape) txListWidget,
-            _showChart
-                ? Container(
-                    height: (deviceHeight -
-                            appBar.preferredSize.height -
-                            _mediaQuery.padding.top) *
-                        0.7,
-                    child: Chart(_recentTransactions),
-                  )
-                : txListWidget
+            Text(
+              _showChart ? "Show List" : "Show Chart",
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            Switch.adaptive(
+              value: _showChart,
+              onChanged: (value) {
+                setState(() => _showChart = value);
+              },
+            ),
           ],
         ),
+        _showChart
+            ? Container(
+                height: (_deviceHeight -
+                        _appBar.preferredSize.height -
+                        _mediaQuery.padding.top) *
+                    0.7,
+                child: Chart(_recentTransactions),
+              )
+            : _txListWidget
+      ];
+    }
+
+    List<Widget> _buildPortraitContent() {
+      return [
+        Container(
+          height: (_deviceHeight -
+                  _appBar.preferredSize.height -
+                  _mediaQuery.padding.top) *
+              0.3,
+          child: Chart(_recentTransactions),
+        ),
+        _txListWidget
+      ];
+    }
+
+    final _body = SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+            children: _isLandscape
+                ? _buildLanscapeContent()
+                : _buildPortraitContent()),
       ),
     );
 
     return Platform.isIOS
         ? CupertinoPageScaffold(
-            child: body,
-            navigationBar: iOSNavBar,
+            child: _body,
+            navigationBar: _iOSNavBar,
           )
         : Scaffold(
-            appBar: appBar,
-            body: body,
-            floatingActionButton: Platform.isIOS
-                ? Container()
-                : FloatingActionButton(
-                    child: Icon(Icons.add),
-                    onPressed: () => _startAddNewTransaction(context),
-                  ),
+            appBar: _appBar,
+            body: _body,
+            floatingActionButton: FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () => _startAddNewTransaction(context),
+            ),
           );
   }
 }
