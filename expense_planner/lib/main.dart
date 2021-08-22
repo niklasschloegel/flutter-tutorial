@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.indigo,
         accentColor: Colors.pink,
         backgroundColor: Colors.white,
+        errorColor: Colors.pink,
         colorScheme: ColorScheme.light().copyWith(onBackground: Colors.black),
         fontFamily: GoogleFonts.quicksand().fontFamily,
         textTheme: GoogleFonts.quicksandTextTheme().copyWith(

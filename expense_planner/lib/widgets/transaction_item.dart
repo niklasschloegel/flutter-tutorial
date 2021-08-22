@@ -21,7 +21,7 @@ class TransactionItem extends StatelessWidget {
         horizontal: 14,
       ),
       child: Dismissible(
-        key: Key(tx.id),
+        key: ValueKey(tx.id),
         child: ListTile(
           leading: CircleAvatar(
             backgroundColor: Theme.of(context).brightness == Brightness.light
