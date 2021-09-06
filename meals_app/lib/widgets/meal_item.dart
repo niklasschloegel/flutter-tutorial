@@ -17,7 +17,7 @@ class MealItem extends StatelessWidget {
       required this.affordability})
       : super(key: key);
 
-  String get complexityText {
+  String get _complexityText {
     switch (complexity) {
       case Complexity.simple:
         return "simple";
@@ -25,6 +25,17 @@ class MealItem extends StatelessWidget {
         return "challenging";
       case Complexity.hard:
         return "hard";
+    }
+  }
+
+  String get _affordabilityText {
+    switch (affordability) {
+      case Affordability.affordable:
+        return "affordable";
+      case Affordability.pricey:
+        return "Pricey";
+      case Affordability.luxurious:
+        return "Luxurious";
     }
   }
 
@@ -85,7 +96,7 @@ class MealItem extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(20),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
@@ -98,14 +109,14 @@ class MealItem extends StatelessWidget {
                     children: [
                       Icon(Icons.work),
                       SizedBox(width: 6),
-                      Text(complexityText),
+                      Text(_complexityText),
                     ],
                   ),
                   Row(
                     children: [
-                      Icon(Icons.schedule),
+                      Icon(Icons.attach_money),
                       SizedBox(width: 6),
-                      Text('$duration min'),
+                      Text(_affordabilityText),
                     ],
                   ),
                 ],
