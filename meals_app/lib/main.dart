@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'DeliMeals',
       theme: ThemeData(
-        primarySwatch: Colors.pink,
+        primarySwatch: Colors.indigo,
         accentColor: Colors.amber,
         canvasColor: Color.fromRGBO(255, 254, 229, 1),
         fontFamily: 'Raleway',
