@@ -1,19 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:meals_app/models/meal.dart';
 import 'package:meals_app/widgets/meal_item.dart';
 import '../dummy_data.dart';
 
-class CategoryMealsScreen extends StatelessWidget {
+class CategoryMealsScreen extends StatefulWidget {
   static const routeName = "/category-meals";
+
+  @override
+  _CategoryMealsScreenState createState() => _CategoryMealsScreenState();
+}
+
+class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
+  late String categoryTitle;
+  late List<Meal> categoryMeals;
+  var _loadedInitData = false;
+
+  void removeMeal(String mealId) {
+    setState(() {
+      var index = categoryMeals.indexWhere((element) => element.id == mealId);
+      categoryMeals.removeAt(index);
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (!_loadedInitData) {
+      final routeArgs =
+          ModalRoute.of(context)?.settings.arguments as Map<String, String>?;
+      final categoryId = routeArgs?['id'] ?? "ID";
+
+      categoryTitle = routeArgs?['title'] ?? "Title";
+      categoryMeals = DUMMY_MEALS
+          .where((element) => element.categories.contains(categoryId))
+          .toList();
+    }
+    _loadedInitData = true;
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final routeArgs =
-        ModalRoute.of(context)?.settings.arguments as Map<String, String>?;
-    final categoryTitle = routeArgs?['title'] ?? "Title";
-    final categoryId = routeArgs?['id'] ?? "ID";
-    final categoryMeals = DUMMY_MEALS
-        .where((element) => element.categories.contains(categoryId))
-        .toList();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(categoryTitle),
@@ -29,6 +55,7 @@ class CategoryMealsScreen extends StatelessWidget {
             duration: meal.duration,
             complexity: meal.complexity,
             affordability: meal.affordability,
+            removeItem: removeMeal,
           );
         },
         itemCount: categoryMeals.length,

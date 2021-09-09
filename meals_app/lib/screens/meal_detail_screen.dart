@@ -1,6 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:meals_app/dummy_data.dart';
 
+enum _PopupMenuOption { delete }
+
+extension _PopupMenuOptionExtension on _PopupMenuOption {
+  String get title {
+    switch (this) {
+      case _PopupMenuOption.delete:
+        return "Delete";
+    }
+  }
+
+  static _PopupMenuOption? initFromString(String value) {
+    for (var menuOption in _PopupMenuOption.values) {
+      if (value == menuOption.title) {
+        return menuOption;
+      }
+    }
+  }
+}
+
 class MealDetailsScreen extends StatelessWidget {
   static const routeName = "/meal-detail";
 
@@ -38,8 +57,31 @@ class MealDetailsScreen extends StatelessWidget {
           width: _media.size.width * 0.9);
     }
 
+    void _handleMenuClick(String value) {
+      var popupItem = _PopupMenuOptionExtension.initFromString(value);
+      if (popupItem != null) {
+        Navigator.of(context).pop(_mealId);
+      }
+    }
+
     return Scaffold(
-      appBar: AppBar(title: Text("${_selectedMeal.title}")),
+      appBar: AppBar(
+        title: Text("${_selectedMeal.title}"),
+        actions: [
+          PopupMenuButton(
+            onSelected: _handleMenuClick,
+            itemBuilder: (ctx) {
+              return _PopupMenuOption.values
+                  .map((val) => val.title)
+                  .map((title) => PopupMenuItem(
+                        child: Text(title),
+                        value: title,
+                      ))
+                  .toList();
+            },
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
