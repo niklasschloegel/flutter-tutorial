@@ -9,7 +9,7 @@ class MealItem extends StatelessWidget {
   final int duration;
   final Complexity complexity;
   final Affordability affordability;
-  final Function removeItem;
+  final Function(String) removeItem;
 
   const MealItem({
     Key? key,

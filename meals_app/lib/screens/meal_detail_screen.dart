@@ -23,6 +23,11 @@ extension _PopupMenuOptionExtension on _PopupMenuOption {
 class MealDetailsScreen extends StatelessWidget {
   static const routeName = "/meal-detail";
 
+  final Function(String) toggleFavorite;
+  final Function(String) isFavorite;
+
+  MealDetailsScreen(this.toggleFavorite, this.isFavorite);
+
   @override
   Widget build(BuildContext context) {
     final _mealId = ModalRoute.of(context)?.settings.arguments as String;
@@ -68,6 +73,10 @@ class MealDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("${_selectedMeal.title}"),
         actions: [
+          IconButton(
+            icon: Icon(isFavorite(_mealId) ? Icons.star : Icons.star_outline),
+            onPressed: () => toggleFavorite(_mealId),
+          ),
           PopupMenuButton(
             onSelected: _handleMenuClick,
             itemBuilder: (ctx) {
