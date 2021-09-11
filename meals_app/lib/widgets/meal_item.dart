@@ -56,6 +56,8 @@ class MealItem extends StatelessWidget {
       if (result != null && result is String) {
         removeItem(result);
         refreshPage();
+      } else {
+        refreshPage();
       }
     });
   }

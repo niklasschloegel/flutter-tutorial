@@ -12,8 +12,13 @@ class FavoritesScreen extends StatefulWidget {
 }
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
+  late var favoriteMeals = widget.favoriteMeals;
+
   void refreshPage() {
-    setState(() {});
+    setState(() {
+      print("Refreshing");
+      favoriteMeals = favoriteMeals;
+    });
   }
 
   @override
@@ -22,7 +27,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       child: Center(
         child: widget.favoriteMeals.isEmpty
             ? Text("No Favorite meals added yet.")
-            : MealList(widget.favoriteMeals, widget.removeMeal, refreshPage),
+            : MealList(favoriteMeals, widget.removeMeal, refreshPage),
       ),
     );
   }
