@@ -15,7 +15,7 @@ class TabsScreen extends StatefulWidget {
 }
 
 class _PageItem {
-  final StatelessWidget page;
+  final Widget page;
   final String title;
 
   _PageItem(this.page, this.title);

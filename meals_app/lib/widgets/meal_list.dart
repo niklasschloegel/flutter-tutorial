@@ -6,8 +6,9 @@ import 'meal_item.dart';
 class MealList extends StatelessWidget {
   final List<Meal> meals;
   final Function(String) removeMeal;
+  final VoidCallback refreshPage;
 
-  MealList(this.meals, this.removeMeal);
+  MealList(this.meals, this.removeMeal, this.refreshPage);
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +24,7 @@ class MealList extends StatelessWidget {
           complexity: meal.complexity,
           affordability: meal.affordability,
           removeItem: removeMeal,
+          refreshPage: refreshPage,
         );
       },
       itemCount: meals.length,
