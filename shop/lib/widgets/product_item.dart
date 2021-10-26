@@ -22,7 +22,7 @@ class ProductItem extends StatelessWidget {
         ),
         footer: GridTileBar(
           leading: Consumer<Product>(
-            builder: (_, p, _) => IconButton(
+            builder: (_, p, __) => IconButton(
               color: Theme.of(context).accentColor,
               icon: Icon(p.isFavorite ? Icons.favorite : Icons.favorite_border),
               onPressed: p.toggleFavorite,
