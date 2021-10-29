@@ -46,9 +46,20 @@ class Cart with ChangeNotifier {
     notifyListeners();
   }
 
+  void removeItem(String productId) {
+    _items.remove(productId);
+    notifyListeners();
+  }
+
   int get itemCount => _items.length == 0
       ? 0
       : _items.entries
           .map((i) => i.value.quantity)
-          .reduce((value, element) => value + element);
+          .reduce((prev, curr) => prev + curr);
+
+  double get totalAmount => _items.length == 0
+      ? 0
+      : _items.entries
+          .map((i) => i.value.price)
+          .reduce((prev, curr) => prev + curr);
 }
