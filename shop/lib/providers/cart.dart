@@ -62,4 +62,9 @@ class Cart with ChangeNotifier {
       : _items.entries
           .map((i) => i.value.price)
           .reduce((prev, curr) => prev + curr);
+
+  void clear() {
+    _items = {};
+    notifyListeners();
+  }
 }
