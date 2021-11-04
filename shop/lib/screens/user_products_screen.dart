@@ -32,7 +32,7 @@ class UserProductsScreen extends StatelessWidget {
                 final prod = productsData.items[i];
                 return Column(
                   children: [
-                    UserProductItem(prod.title, prod.imageUrl),
+                    UserProductItem(prod.id, prod.title, prod.imageUrl),
                     if (i != productsData.items.length - 1) Divider()
                   ],
                 );

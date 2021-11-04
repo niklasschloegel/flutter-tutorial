@@ -49,4 +49,12 @@ class Products with ChangeNotifier {
     _items.add(product);
     notifyListeners();
   }
+
+  void updateProduct(Product editedProduct) {
+    final prodIndex = _items.indexWhere((prod) => prod.id == editedProduct.id);
+    if (prodIndex >= 0) {
+      _items[prodIndex] = editedProduct;
+      notifyListeners();
+    }
+  }
 }

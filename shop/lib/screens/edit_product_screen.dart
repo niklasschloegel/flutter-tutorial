@@ -17,11 +17,31 @@ class _EditProductScreenState extends State<EditProductScreen> {
   final _form = GlobalKey<FormState>();
   var _editedProduct =
       Product(id: "", title: "", description: "", price: 0, imageUrl: "");
+  var _isInit = true;
+  var _initValues = {"title": "", "price": "", "description": ""};
 
   @override
   void initState() {
     _imageUrlFocusNode.addListener(_updateImageUrl);
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      final prodId = ModalRoute.of(context)?.settings.arguments as String?;
+      if (prodId != null) {
+        var prod =
+            Provider.of<Products>(context, listen: false).findById(prodId);
+        _editedProduct = prod;
+        _initValues["title"] = _editedProduct.title;
+        _initValues["price"] = _editedProduct.price.toString();
+        _initValues["description"] = _editedProduct.description;
+        _imageUrlController.text = _editedProduct.imageUrl;
+      }
+      _isInit = false;
+    }
+    super.didChangeDependencies();
   }
 
   @override
@@ -46,8 +66,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
     final currentState = _form.currentState;
     if (currentState != null && currentState.validate()) {
       currentState.save();
-      Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
+      if (_editedProduct.id.isEmpty)
+        Provider.of<Products>(context, listen: false)
+            .addProduct(_editedProduct);
+      else
+        Provider.of<Products>(context, listen: false)
+            .updateProduct(_editedProduct);
     }
+    Navigator.of(context).pop();
   }
 
   @override
@@ -81,6 +107,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     validator: (val) => val == null || val.isEmpty
                         ? "Please enter a title"
                         : null,
+                    initialValue: _initValues["title"],
                   ),
                   TextFormField(
                     decoration: InputDecoration(labelText: "Price"),
@@ -101,6 +128,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       if (double.parse(val) <= 0)
                         return "Please enter a positive price";
                     },
+                    initialValue: _initValues["price"],
                   ),
                   TextFormField(
                     decoration: InputDecoration(labelText: "Description"),
@@ -116,6 +144,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       if (val.length < 10)
                         return "Should be at least 10 characters long";
                     },
+                    initialValue: _initValues["description"],
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
