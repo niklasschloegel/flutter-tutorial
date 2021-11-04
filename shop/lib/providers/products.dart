@@ -6,7 +6,7 @@ import 'package:shop/providers/product.dart';
 import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
-  final url = Uri.parse(Config.serverUrl);
+  final url = Uri.parse("${Config.serverUrl}/products.json");
 
   var _items = <Product>[];
 
