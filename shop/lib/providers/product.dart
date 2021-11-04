@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 
 class Product with ChangeNotifier {
@@ -16,6 +18,14 @@ class Product with ChangeNotifier {
     required this.imageUrl,
     this.isFavorite = false,
   });
+
+  String toJSON() => json.encode({
+        "title": title,
+        "description": description,
+        "price": price,
+        "imageUrl": imageUrl,
+        "isFavorite": isFavorite,
+      });
 
   void toggleFavorite() {
     this.isFavorite ^= true;
