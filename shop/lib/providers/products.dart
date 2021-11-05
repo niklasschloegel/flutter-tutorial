@@ -21,7 +21,8 @@ class Products with ChangeNotifier {
   Future<void> fetchProcuts() async {
     try {
       final response = await http.get(Uri.parse("$url.json"));
-      final body = json.decode(response.body) as Map<String, dynamic>;
+      final body = json.decode(response.body) as Map<String, dynamic>?;
+      if (body == null) return;
       var _newItems = <Product>[];
       body.forEach((key, value) => _newItems.add(
             Product(

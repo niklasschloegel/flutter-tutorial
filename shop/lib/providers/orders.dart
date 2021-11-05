@@ -42,7 +42,8 @@ class Orders with ChangeNotifier {
 
   Future<void> initOrders() async {
     return http.get(Uri.parse("$url.json")).then((res) {
-      final body = json.decode(res.body) as Map<String, dynamic>;
+      final body = json.decode(res.body) as Map<String, dynamic>?;
+      if (body == null) return;
       body.forEach((id, data) {
         final cartItems = (data["products"] as List<dynamic>)
             .map((productsMap) => CartItem(
