@@ -6,7 +6,7 @@ import 'package:shop/providers/product.dart';
 import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
-  final url = Uri.parse("${Config.serverUrl}/products.json");
+  final url = "${Config.serverUrl}/products";
 
   var _items = <Product>[];
 
@@ -19,7 +19,7 @@ class Products with ChangeNotifier {
 
   Future<void> fetchProcuts() async {
     try {
-      final response = await http.get(url);
+      final response = await http.get(Uri.parse("$url.json"));
       final body = json.decode(response.body) as Map<String, dynamic>;
       var _newItems = <Product>[];
       body.forEach((key, value) => _newItems.add(
@@ -41,7 +41,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) =>
-      http.post(url, body: product.toJSON()).then((res) {
+      http.post(Uri.parse("$url.json"), body: product.toJSON()).then((res) {
         final body = json.decode(res.body);
         product.id = body["name"];
         _items.add(product);
@@ -51,9 +51,11 @@ class Products with ChangeNotifier {
         throw err;
       });
 
-  void updateProduct(Product editedProduct) {
+  Future<void> updateProduct(Product editedProduct) async {
     final prodIndex = _items.indexWhere((prod) => prod.id == editedProduct.id);
     if (prodIndex >= 0) {
+      await http.patch(Uri.parse("$url/${editedProduct.id}.json"),
+          body: editedProduct.toJSON());
       _items[prodIndex] = editedProduct;
       notifyListeners();
     }

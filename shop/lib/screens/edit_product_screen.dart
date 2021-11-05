@@ -63,34 +63,38 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
-  void _saveForm() {
+  Future<Null> showError() => showDialog<Null>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text("Error"),
+          content: Text("Something went wrong."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text("Ok"),
+            )
+          ],
+        ),
+      );
+
+  void _saveForm() async {
     final currentState = _form.currentState;
     if (currentState != null && currentState.validate()) {
       currentState.save();
-      if (_editedProduct.id.isEmpty) {
-        setState(() => _loading = true);
-        Provider.of<Products>(context, listen: false)
-            .addProduct(_editedProduct)
-            .catchError((err) => showDialog<Null>(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    title: Text("Error"),
-                    content: Text("Something went wrong."),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(ctx).pop(),
-                        child: Text("Ok"),
-                      )
-                    ],
-                  ),
-                ))
-            .then((_) {
-          setState(() => _loading = false);
-          Navigator.of(context).pop();
-        });
-      } else {
-        Provider.of<Products>(context, listen: false)
-            .updateProduct(_editedProduct);
+      setState(() => _loading = true);
+
+      try {
+        if (_editedProduct.id.isEmpty) {
+          await Provider.of<Products>(context, listen: false)
+              .addProduct(_editedProduct);
+        } else {
+          await Provider.of<Products>(context, listen: false)
+              .updateProduct(_editedProduct);
+        }
+      } catch (_) {
+        await showError();
+      } finally {
+        setState(() => _loading = false);
         Navigator.of(context).pop();
       }
     }
