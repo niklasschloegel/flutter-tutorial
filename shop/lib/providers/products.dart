@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:shop/config.dart';
+import 'package:shop/models/http_exception.dart';
 import 'package:shop/providers/product.dart';
 import 'package:http/http.dart' as http;
 
@@ -61,8 +63,19 @@ class Products with ChangeNotifier {
     }
   }
 
-  void deleteProduct(String id) {
-    _items.removeWhere((prod) => prod.id == id);
+  Future<void> deleteProduct(String id) {
+    final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
+    final existingProduct = _items[existingProductIndex];
+    _items.removeAt(existingProductIndex);
     notifyListeners();
+
+    return http.delete(Uri.parse("$url/$id.json")).then((res) {
+      if (res.statusCode >= 400)
+        throw HttpException("Could not delete message");
+    }).catchError((e) {
+      _items.insert(existingProductIndex, existingProduct);
+      notifyListeners();
+      throw e;
+    });
   }
 }

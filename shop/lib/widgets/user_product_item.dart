@@ -12,6 +12,7 @@ class UserProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
     return ListTile(
       leading: CircleAvatar(
         backgroundImage: NetworkImage(imageUrl),
@@ -57,8 +58,12 @@ class UserProductItem extends StatelessWidget {
                     ),
                   ).then((value) {
                     if (value is bool && value == true)
-                      Provider.of<Products>(context, listen: false)
+                      return Provider.of<Products>(context, listen: false)
                           .deleteProduct(id);
+                  }).catchError((_) {
+                    scaffoldMessenger.showSnackBar(SnackBar(
+                        content: Text(
+                            "Something went wrong, item could not be deleted.")));
                   });
                 },
                 icon: Icon(Icons.delete),
