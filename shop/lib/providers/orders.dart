@@ -24,6 +24,9 @@ class OrderItem {
         "products": products
             .map((e) => {
                   "id": e.id,
+                  "price": e.price,
+                  "quantity": e.quantity,
+                  "title": e.title,
                 })
             .toList(),
         "dateTime": dateTime.millisecondsSinceEpoch,
@@ -36,6 +39,33 @@ class Orders with ChangeNotifier {
   List<OrderItem> _orders = [];
 
   List<OrderItem> get orders => [..._orders];
+
+  Future<void> initOrders() async {
+    return http.get(Uri.parse("$url.json")).then((res) {
+      final body = json.decode(res.body) as Map<String, dynamic>;
+      body.forEach((id, data) {
+        final cartItems = (data["products"] as List<dynamic>)
+            .map((productsMap) => CartItem(
+                id: productsMap["id"],
+                title: productsMap["title"],
+                quantity: productsMap["quantity"],
+                price: productsMap["price"]))
+            .toList();
+
+        _orders.add(
+          OrderItem(
+            id: id,
+            amount: data["amount"],
+            products: cartItems,
+            dateTime: DateTime.fromMillisecondsSinceEpoch(data["dateTime"]),
+          ),
+        );
+      });
+    }).catchError((err) {
+      print(err);
+      throw err;
+    });
+  }
 
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
     final newOrder = OrderItem(
