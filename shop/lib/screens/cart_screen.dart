@@ -4,11 +4,46 @@ import 'package:shop/providers/cart.dart' show Cart;
 import 'package:shop/providers/orders.dart';
 import 'package:shop/widgets/cart_item.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   static const routeName = "/cart";
+
+  @override
+  _CartScreenState createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  var _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    void _proceedOrder() {
+      setState(() => _isLoading = true);
+      Provider.of<Orders>(context, listen: false)
+          .addOrder(
+        cart.items.values.toList(),
+        cart.totalAmount,
+      )
+          .then((_) {
+        cart.clear();
+        scaffoldMessenger.hideCurrentSnackBar();
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text("Order placed successfully."),
+          ),
+        );
+      }).catchError((e) {
+        print(e);
+        scaffoldMessenger.hideCurrentSnackBar();
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text("Something went wrong while placing the order"),
+          ),
+        );
+      }).then((_) => setState(() => _isLoading = false));
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -33,27 +68,38 @@ class CartScreen extends StatelessWidget {
                     Spacer(),
                     Chip(
                       label: Text(
-                        "\$${cart.totalAmount}",
+                        "\$${cart.totalAmount.toStringAsFixed(2)}",
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.onPrimary),
                       ),
                       backgroundColor: Theme.of(context).primaryColor,
                     ),
-                    TextButton(
-                      onPressed: () {
-                        Provider.of<Orders>(context, listen: false).addOrder(
-                          cart.items.values.toList(),
-                          cart.totalAmount,
-                        );
-                        cart.clear();
-                      },
-                      child: Text(
-                        "ORDER NOW",
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                    )
+                    _isLoading
+                        ? Center(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 3,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                            ),
+                          )
+                        : TextButton(
+                            onPressed:
+                                cart.items.keys.isEmpty ? null : _proceedOrder,
+                            child: Text(
+                              "ORDER NOW",
+                              style: TextStyle(
+                                color: cart.items.keys.isEmpty
+                                    ? Colors.grey
+                                    : Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          )
                   ],
                 ),
               ),
