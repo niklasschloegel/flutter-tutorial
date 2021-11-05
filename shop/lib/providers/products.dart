@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:shop/config.dart';
 import 'package:shop/models/http_exception.dart';
 import 'package:shop/providers/product.dart';

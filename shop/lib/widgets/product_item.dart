@@ -35,7 +35,19 @@ class ProductItem extends StatelessWidget {
             builder: (_, p, __) => IconButton(
               color: Theme.of(context).accentColor,
               icon: Icon(p.isFavorite ? Icons.favorite : Icons.favorite_border),
-              onPressed: p.toggleFavorite,
+              onPressed: () async {
+                try {
+                  await product.toggleFavorite();
+                } catch (e) {
+                  final scaffMessenger = ScaffoldMessenger.of(context);
+                  scaffMessenger.hideCurrentSnackBar();
+                  scaffMessenger.showSnackBar(
+                    SnackBar(
+                      content: Text("Could not change favorite state"),
+                    ),
+                  );
+                }
+              },
             ),
           ),
           backgroundColor: Colors.black87,

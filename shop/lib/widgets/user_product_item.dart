@@ -61,9 +61,13 @@ class UserProductItem extends StatelessWidget {
                       return Provider.of<Products>(context, listen: false)
                           .deleteProduct(id);
                   }).catchError((_) {
-                    scaffoldMessenger.showSnackBar(SnackBar(
+                    scaffoldMessenger.hideCurrentSnackBar();
+                    scaffoldMessenger.showSnackBar(
+                      SnackBar(
                         content: Text(
-                            "Something went wrong, item could not be deleted.")));
+                            "Something went wrong, item could not be deleted."),
+                      ),
+                    );
                   });
                 },
                 icon: Icon(Icons.delete),

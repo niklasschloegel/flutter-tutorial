@@ -1,8 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'package:shop/models/http_exception.dart';
+
+import '../config.dart';
 
 class Product with ChangeNotifier {
+  final url = "${Config.serverUrl}/products";
+
   String id;
   String title;
   String description;
@@ -27,9 +33,21 @@ class Product with ChangeNotifier {
         "isFavorite": isFavorite,
       });
 
-  void toggleFavorite() {
+  Future<void> toggleFavorite() {
     this.isFavorite ^= true;
     notifyListeners();
+    return http
+        .patch(Uri.parse("$url/$id.json"),
+            body: json.encode({"isFavorite": isFavorite}))
+        .then((res) => {
+              if (res.statusCode >= 400)
+                throw HttpException("Favorite status could not be updated")
+            })
+        .catchError((e) {
+      this.isFavorite ^= true;
+      notifyListeners();
+      throw e;
+    });
   }
 
   @override

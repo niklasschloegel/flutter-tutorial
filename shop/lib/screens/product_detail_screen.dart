@@ -6,6 +6,7 @@ import 'package:shop/providers/product.dart';
 class ProductDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final scaffMessenger = ScaffoldMessenger.of(context);
     final product = Provider.of<Product>(
       context,
       listen: false,
@@ -17,7 +18,16 @@ class ProductDetailScreen extends StatelessWidget {
         actions: [
           Consumer<Product>(
             builder: (_, p, __) => IconButton(
-              onPressed: product.toggleFavorite,
+              onPressed: () {
+                product.toggleFavorite().catchError((_) {
+                  scaffMessenger.hideCurrentSnackBar();
+                  scaffMessenger.showSnackBar(
+                    SnackBar(
+                      content: Text("Could not change favorite state"),
+                    ),
+                  );
+                });
+              },
               icon: Icon(p.isFavorite ? Icons.favorite : Icons.favorite_border),
             ),
           )
