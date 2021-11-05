@@ -13,7 +13,7 @@ class Auth with ChangeNotifier {
   String? get token {
     var expDate = _expirationDate;
     if (_token != null && expDate != null && expDate.isAfter(DateTime.now())) {
-      return token;
+      return _token;
     }
   }
 

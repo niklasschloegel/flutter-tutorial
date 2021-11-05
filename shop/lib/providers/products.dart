@@ -8,8 +8,13 @@ import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
   final url = "${Config.serverUrl}/products";
-
   var _items = <Product>[];
+
+  late final String _authToken;
+
+  Products(this._items);
+
+  set authToken(token) => _authToken = token;
 
   List<Product> get items => [..._items];
 
@@ -20,7 +25,7 @@ class Products with ChangeNotifier {
 
   Future<void> fetchProcuts() async {
     try {
-      final response = await http.get(Uri.parse("$url.json"));
+      final response = await http.get(Uri.parse("$url.json?auth=$_authToken"));
       final body = json.decode(response.body) as Map<String, dynamic>?;
       if (body == null) return;
       var _newItems = <Product>[];
