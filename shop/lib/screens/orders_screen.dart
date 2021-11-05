@@ -4,18 +4,29 @@ import 'package:shop/providers/orders.dart' show Orders;
 import 'package:shop/widgets/app_drawer.dart';
 import 'package:shop/widgets/order_item.dart';
 
-class OrdersScreen extends StatelessWidget {
+class OrdersScreen extends StatefulWidget {
   static const routeName = "/orders";
+
+  @override
+  _OrdersScreenState createState() => _OrdersScreenState();
+}
+
+class _OrdersScreenState extends State<OrdersScreen> {
+  late final Future _ordersFuture =
+      Provider.of<Orders>(context, listen: false).initOrders();
 
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: Text("Your Orders"),
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => setState(() {}),
+        ),
         drawer: AppDrawer(),
         body: SafeArea(
           child: FutureBuilder(
-            future: Provider.of<Orders>(context, listen: false).initOrders(),
+            future: _ordersFuture,
             builder: (ctx, dataSnapshot) {
               if (dataSnapshot.connectionState == ConnectionState.waiting)
                 return Center(

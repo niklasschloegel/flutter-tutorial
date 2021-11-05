@@ -41,6 +41,7 @@ class Orders with ChangeNotifier {
   List<OrderItem> get orders => [..._orders];
 
   Future<void> initOrders() async {
+    var _newOrders = <OrderItem>[];
     return http.get(Uri.parse("$url.json")).then((res) {
       final body = json.decode(res.body) as Map<String, dynamic>?;
       if (body == null) return;
@@ -53,7 +54,7 @@ class Orders with ChangeNotifier {
                 price: productsMap["price"]))
             .toList();
 
-        _orders.add(
+        _newOrders.add(
           OrderItem(
             id: id,
             amount: data["amount"],
@@ -62,6 +63,7 @@ class Orders with ChangeNotifier {
           ),
         );
       });
+      _orders = _newOrders;
     }).catchError((err) {
       print(err);
       throw err;
