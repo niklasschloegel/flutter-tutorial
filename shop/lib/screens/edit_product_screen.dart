@@ -115,7 +115,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
       body: SafeArea(
         child: _loading
             ? Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).primaryColor,
+                ),
               )
             : Form(
                 key: _form,
