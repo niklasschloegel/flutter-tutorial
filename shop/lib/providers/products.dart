@@ -11,10 +11,12 @@ class Products with ChangeNotifier {
   var _items = <Product>[];
 
   late final String _authToken;
+  late final String _userId;
 
   Products(this._items);
 
   set authToken(token) => _authToken = token;
+  set userId(id) => _userId = id;
 
   List<Product> get items => [..._items];
 
@@ -28,15 +30,25 @@ class Products with ChangeNotifier {
       final response = await http.get(Uri.parse("$url.json?auth=$_authToken"));
       final body = json.decode(response.body) as Map<String, dynamic>?;
       if (body == null) return;
+
+      final favoriteResponse = await http.get(Uri.parse(
+          "${Config.serverUrl}/userFavorites/$_userId.json?auth=$_authToken"));
+      final favoriteData =
+          json.decode(favoriteResponse.body) as Map<String, dynamic>?;
+
       var _newItems = <Product>[];
-      body.forEach((key, value) => _newItems.add(
+      print(favoriteData);
+
+      body.forEach((id, data) => _newItems.add(
             Product(
-              id: key,
-              title: value["title"],
-              description: value["description"],
-              price: value["price"],
-              imageUrl: value["imageUrl"],
-              isFavorite: value["isFavorite"],
+              id: id,
+              title: data["title"],
+              description: data["description"],
+              price: data["price"],
+              imageUrl: data["imageUrl"],
+              isFavorite: favoriteData == null
+                  ? false
+                  : favoriteData[id]?["isFavorite"] ?? false,
             ),
           ));
       _items = _newItems;

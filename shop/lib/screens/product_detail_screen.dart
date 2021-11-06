@@ -22,8 +22,10 @@ class ProductDetailScreen extends StatelessWidget {
             builder: (_, p, __) => IconButton(
               onPressed: () {
                 final token = auth.token;
-                if (token == null) return;
-                product.toggleFavorite(token).catchError((_) {
+                final userId = auth.userId;
+                if (token == null || userId == null) return;
+
+                product.toggleFavorite(token, userId).catchError((_) {
                   scaffMessenger.hideCurrentSnackBar();
                   scaffMessenger.showSnackBar(
                     SnackBar(

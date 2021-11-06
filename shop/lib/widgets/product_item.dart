@@ -40,8 +40,9 @@ class ProductItem extends StatelessWidget {
               onPressed: () async {
                 try {
                   final token = auth.token;
-                  if (token == null) return;
-                  await product.toggleFavorite(token);
+                  final userId = auth.userId;
+                  if (token == null || userId == null) return;
+                  await product.toggleFavorite(token, userId);
                 } catch (e) {
                   final scaffMessenger = ScaffoldMessenger.of(context);
                   scaffMessenger.hideCurrentSnackBar();

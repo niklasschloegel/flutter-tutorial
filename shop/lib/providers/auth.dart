@@ -17,6 +17,8 @@ class Auth with ChangeNotifier {
     }
   }
 
+  String? get userId => _userId;
+
   bool get isAuthenticated => token != null;
 
   Future<void> signUp(String email, String password) async {

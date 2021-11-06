@@ -7,7 +7,7 @@ import 'package:shop/models/http_exception.dart';
 import '../config.dart';
 
 class Product with ChangeNotifier {
-  final url = "${Config.serverUrl}/products";
+  final url = "${Config.serverUrl}";
 
   String id;
   String title;
@@ -30,14 +30,13 @@ class Product with ChangeNotifier {
         "description": description,
         "price": price,
         "imageUrl": imageUrl,
-        "isFavorite": isFavorite,
       });
 
-  Future<void> toggleFavorite(String token) {
+  Future<void> toggleFavorite(String token, String userId) {
     this.isFavorite ^= true;
     notifyListeners();
     return http
-        .patch(Uri.parse("$url/$id.json?auth=$token"),
+        .put(Uri.parse("$url/userFavorites/$userId/$id.json?auth=$token"),
             body: json.encode({"isFavorite": isFavorite}))
         .then((res) => {
               if (res.statusCode >= 400)
