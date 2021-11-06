@@ -33,11 +33,11 @@ class Product with ChangeNotifier {
         "isFavorite": isFavorite,
       });
 
-  Future<void> toggleFavorite() {
+  Future<void> toggleFavorite(String token) {
     this.isFavorite ^= true;
     notifyListeners();
     return http
-        .patch(Uri.parse("$url/$id.json"),
+        .patch(Uri.parse("$url/$id.json?auth=$token"),
             body: json.encode({"isFavorite": isFavorite}))
         .then((res) => {
               if (res.statusCode >= 400)

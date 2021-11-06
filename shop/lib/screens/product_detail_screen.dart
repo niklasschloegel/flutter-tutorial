@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/providers/auth.dart';
 import 'package:shop/providers/cart.dart';
 import 'package:shop/providers/product.dart';
 
 class ProductDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<Auth>(context, listen: false);
     final scaffMessenger = ScaffoldMessenger.of(context);
     final product = Provider.of<Product>(
       context,
@@ -19,7 +21,9 @@ class ProductDetailScreen extends StatelessWidget {
           Consumer<Product>(
             builder: (_, p, __) => IconButton(
               onPressed: () {
-                product.toggleFavorite().catchError((_) {
+                final token = auth.token;
+                if (token == null) return;
+                product.toggleFavorite(token).catchError((_) {
                   scaffMessenger.hideCurrentSnackBar();
                   scaffMessenger.showSnackBar(
                     SnackBar(

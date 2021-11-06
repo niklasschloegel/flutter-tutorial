@@ -47,8 +47,9 @@ class Products with ChangeNotifier {
     }
   }
 
-  Future<void> addProduct(Product product) =>
-      http.post(Uri.parse("$url.json"), body: product.toJSON()).then((res) {
+  Future<void> addProduct(Product product) => http
+          .post(Uri.parse("$url.json?auth=$_authToken"), body: product.toJSON())
+          .then((res) {
         final body = json.decode(res.body);
         product.id = body["name"];
         _items.add(product);
@@ -61,7 +62,8 @@ class Products with ChangeNotifier {
   Future<void> updateProduct(Product editedProduct) async {
     final prodIndex = _items.indexWhere((prod) => prod.id == editedProduct.id);
     if (prodIndex >= 0) {
-      await http.patch(Uri.parse("$url/${editedProduct.id}.json"),
+      await http.patch(
+          Uri.parse("$url/${editedProduct.id}.json?auth=$_authToken"),
           body: editedProduct.toJSON());
       _items[prodIndex] = editedProduct;
       notifyListeners();
@@ -74,7 +76,7 @@ class Products with ChangeNotifier {
     _items.removeAt(existingProductIndex);
     notifyListeners();
 
-    return http.delete(Uri.parse("$url/$id.json")).then((res) {
+    return http.delete(Uri.parse("$url/$id.json?auth=$_authToken")).then((res) {
       if (res.statusCode >= 400)
         throw HttpException("Could not delete message");
     }).catchError((e) {

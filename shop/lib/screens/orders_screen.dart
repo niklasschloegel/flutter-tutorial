@@ -20,9 +20,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
         appBar: AppBar(
           title: Text("Your Orders"),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => setState(() {}),
-        ),
         drawer: AppDrawer(),
         body: SafeArea(
           child: FutureBuilder(
