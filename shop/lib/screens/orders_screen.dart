@@ -36,13 +36,20 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   return Center(child: Text("Error, something went wrong :("));
                 } else {
                   return Consumer<Orders>(
-                    builder: (_, orderData, __) => ListView.builder(
-                      itemBuilder: (ctx, i) => OrderItem(
-                        key: ValueKey(orderData.orders[i].id),
-                        order: orderData.orders[i],
-                      ),
-                      itemCount: orderData.orders.length,
-                    ),
+                    builder: (_, orderData, __) => orderData.orders.length == 0
+                        ? Center(
+                            child: Text(
+                              "No Orders found.",
+                              style: TextStyle(color: Colors.grey.shade600),
+                            ),
+                          )
+                        : ListView.builder(
+                            itemBuilder: (ctx, i) => OrderItem(
+                              key: ValueKey(orderData.orders[i].id),
+                              order: orderData.orders[i],
+                            ),
+                            itemCount: orderData.orders.length,
+                          ),
                   );
                 }
               }

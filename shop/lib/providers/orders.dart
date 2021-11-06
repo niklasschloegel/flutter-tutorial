@@ -34,20 +34,21 @@ class OrderItem {
 }
 
 class Orders with ChangeNotifier {
-  final url = "${Config.serverUrl}/orders";
-
   List<OrderItem> _orders = [];
   late final String _authToken;
+  late final String _userId;
 
   Orders(this._orders);
 
+  String get url => "${Config.serverUrl}/orders/$_userId.json?auth=$_authToken";
   set authToken(token) => _authToken = token;
+  set userId(id) => _userId = id;
 
   List<OrderItem> get orders => [..._orders];
 
   Future<void> initOrders() async {
     var _newOrders = <OrderItem>[];
-    return http.get(Uri.parse("$url.json?auth=$_authToken")).then((res) {
+    return http.get(Uri.parse(url)).then((res) {
       final body = json.decode(res.body) as Map<String, dynamic>?;
       if (body == null) return;
       body.forEach((id, data) {
@@ -82,9 +83,7 @@ class Orders with ChangeNotifier {
         products: cartProducts,
         dateTime: DateTime.now());
 
-    return http
-        .post(Uri.parse("$url.json?auth=$_authToken"), body: newOrder.toJSON())
-        .then((res) {
+    return http.post(Uri.parse(url), body: newOrder.toJSON()).then((res) {
       final body = json.decode(res.body);
       newOrder.id = body["name"];
       _orders.insert(0, newOrder);
