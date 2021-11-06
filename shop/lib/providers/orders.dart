@@ -35,14 +35,14 @@ class OrderItem {
 
 class Orders with ChangeNotifier {
   List<OrderItem> _orders = [];
-  late final String _authToken;
-  late final String _userId;
+  late final String? _authToken;
+  late final String? _userId;
 
   Orders(this._orders);
 
   String get url => "${Config.serverUrl}/orders/$_userId.json?auth=$_authToken";
-  set authToken(token) => _authToken = token;
-  set userId(id) => _userId = id;
+  set authToken(String? token) => _authToken = token;
+  set userId(String? id) => _userId = id;
 
   List<OrderItem> get orders => [..._orders];
 

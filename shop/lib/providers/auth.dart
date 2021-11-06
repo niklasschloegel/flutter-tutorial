@@ -57,4 +57,11 @@ class Auth with ChangeNotifier {
     );
     notifyListeners();
   }
+
+  void logout() {
+    _token = null;
+    _userId = null;
+    _expirationDate = null;
+    notifyListeners();
+  }
 }

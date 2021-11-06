@@ -10,13 +10,13 @@ class Products with ChangeNotifier {
   final url = "${Config.serverUrl}/products";
   var _items = <Product>[];
 
-  late final String _authToken;
-  late final String _userId;
+  late final String? _authToken;
+  late final String? _userId;
 
   Products(this._items);
 
-  set authToken(token) => _authToken = token;
-  set userId(id) => _userId = id;
+  set authToken(String? token) => _authToken = token;
+  set userId(String? id) => _userId = id;
 
   List<Product> get items => [..._items];
 
@@ -61,25 +61,31 @@ class Products with ChangeNotifier {
     }
   }
 
-  Future<void> addProduct(Product product) => http
-          .post(Uri.parse("$url.json?auth=$_authToken"),
-              body: product.toJSON(_userId))
-          .then((res) {
-        final body = json.decode(res.body);
-        product.id = body["name"];
-        _items.add(product);
-        notifyListeners();
-      }).catchError((err) {
-        print(err);
-        throw err;
-      });
+  Future<void> addProduct(Product product) {
+    final userId = _userId;
+    if (userId == null) return Future.value();
+    return http
+        .post(Uri.parse("$url.json?auth=$_authToken"),
+            body: product.toJSON(userId))
+        .then((res) {
+      final body = json.decode(res.body);
+      product.id = body["name"];
+      _items.add(product);
+      notifyListeners();
+    }).catchError((err) {
+      print(err);
+      throw err;
+    });
+  }
 
   Future<void> updateProduct(Product editedProduct) async {
     final prodIndex = _items.indexWhere((prod) => prod.id == editedProduct.id);
+    final userId = _userId;
+    if (userId == null) return;
     if (prodIndex >= 0) {
       await http.patch(
           Uri.parse("$url/${editedProduct.id}.json?auth=$_authToken"),
-          body: editedProduct.toJSON(_userId));
+          body: editedProduct.toJSON(userId));
       _items[prodIndex] = editedProduct;
       notifyListeners();
     }
