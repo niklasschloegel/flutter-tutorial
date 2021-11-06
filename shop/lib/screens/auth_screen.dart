@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/models/http_exception.dart';
 import 'package:shop/providers/auth.dart';
+import 'package:shop/widgets/colored_textfield.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -99,6 +100,17 @@ class _AuthCardState extends State<AuthCard> {
   };
   var _isLoading = false;
   final _passwordController = TextEditingController();
+  final _emailFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
+  final _passwordConfirmationFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    _passwordConfirmationFocusNode.dispose();
+    super.dispose();
+  }
 
   void _showErrorDialog(String message) => showDialog(
         context: context,
@@ -162,6 +174,7 @@ class _AuthCardState extends State<AuthCard> {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
+    final primaryColor = Theme.of(context).primaryColor;
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
@@ -178,8 +191,12 @@ class _AuthCardState extends State<AuthCard> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                TextFormField(
-                  decoration: InputDecoration(labelText: 'E-Mail'),
+                ColoredTextField(
+                  primaryColor: Theme.of(context).primaryColor,
+                  focusNode: _emailFocusNode,
+                  decoration: InputDecoration(
+                    labelText: 'E-Mail',
+                  ),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value != null &&
@@ -192,7 +209,9 @@ class _AuthCardState extends State<AuthCard> {
                     _authData['email'] = value ?? "";
                   },
                 ),
-                TextFormField(
+                ColoredTextField(
+                  primaryColor: Theme.of(context).primaryColor,
+                  focusNode: _passwordFocusNode,
                   decoration: InputDecoration(labelText: 'Password'),
                   obscureText: true,
                   controller: _passwordController,
@@ -206,7 +225,9 @@ class _AuthCardState extends State<AuthCard> {
                   },
                 ),
                 if (_authMode == AuthMode.Signup)
-                  TextFormField(
+                  ColoredTextField(
+                    primaryColor: Theme.of(context).primaryColor,
+                    focusNode: _passwordConfirmationFocusNode,
                     enabled: _authMode == AuthMode.Signup,
                     decoration: InputDecoration(labelText: 'Confirm Password'),
                     obscureText: true,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/providers/product.dart';
 import 'package:shop/providers/products.dart';
+import 'package:shop/widgets/colored_textfield.dart';
 
 class EditProductScreen extends StatefulWidget {
   static const routeName = "/edit-product";
@@ -10,10 +11,11 @@ class EditProductScreen extends StatefulWidget {
 }
 
 class _EditProductScreenState extends State<EditProductScreen> {
+  final _titleFocusNode = FocusNode();
   final _priceFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
-  final _imageUrlController = TextEditingController();
   final _imageUrlFocusNode = FocusNode();
+  final _imageUrlController = TextEditingController();
   final _form = GlobalKey<FormState>();
   var _editedProduct =
       Product(id: "", title: "", description: "", price: 0, imageUrl: "");
@@ -48,8 +50,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
   @override
   void dispose() {
     _imageUrlFocusNode.removeListener(_updateImageUrl);
-    _priceFocusNode.dispose();
+    _titleFocusNode.dispose();
     _descriptionFocusNode.dispose();
+    _priceFocusNode.dispose();
     _imageUrlController.dispose();
     _imageUrlFocusNode.dispose();
     super.dispose();
@@ -102,6 +105,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).primaryColor;
     return Scaffold(
       appBar: AppBar(
         title: Text("Edit Product"),
@@ -126,8 +130,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        TextFormField(
-                          decoration: InputDecoration(labelText: "Title"),
+                        ColoredTextField(
+                          primaryColor: primaryColor,
+                          focusNode: _titleFocusNode,
+                          decoration: InputDecoration(
+                            labelText: "Title",
+                          ),
                           textInputAction: TextInputAction.next,
                           onFieldSubmitted: (_) => FocusScope.of(context)
                               .requestFocus(_priceFocusNode),
@@ -139,7 +147,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                               : null,
                           initialValue: _initValues["title"],
                         ),
-                        TextFormField(
+                        ColoredTextField(
+                          primaryColor: primaryColor,
                           decoration: InputDecoration(labelText: "Price"),
                           textInputAction: TextInputAction.next,
                           keyboardType:
@@ -161,7 +170,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           },
                           initialValue: _initValues["price"],
                         ),
-                        TextFormField(
+                        ColoredTextField(
+                          primaryColor: primaryColor,
                           decoration: InputDecoration(labelText: "Description"),
                           maxLines: 3,
                           keyboardType: TextInputType.multiline,
@@ -189,7 +199,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                     Border.all(width: 1, color: Colors.grey),
                               ),
                               child: _imageUrlController.text.isEmpty
-                                  ? Text("Enter URL")
+                                  ? Center(
+                                      child: Text("Enter URL"),
+                                    )
                                   : FittedBox(
                                       child: Image.network(
                                           _imageUrlController.text),
@@ -197,7 +209,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                     ),
                             ),
                             Expanded(
-                              child: TextFormField(
+                              child: ColoredTextField(
+                                primaryColor: primaryColor,
                                 decoration:
                                     InputDecoration(labelText: "Image URL"),
                                 keyboardType: TextInputType.url,
