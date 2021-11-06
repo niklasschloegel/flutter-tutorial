@@ -192,7 +192,7 @@ class _AuthCardState extends State<AuthCard> {
             child: Column(
               children: <Widget>[
                 ColoredTextField(
-                  primaryColor: Theme.of(context).primaryColor,
+                  primaryColor: primaryColor,
                   focusNode: _emailFocusNode,
                   decoration: InputDecoration(
                     labelText: 'E-Mail',
@@ -210,7 +210,7 @@ class _AuthCardState extends State<AuthCard> {
                   },
                 ),
                 ColoredTextField(
-                  primaryColor: Theme.of(context).primaryColor,
+                  primaryColor: primaryColor,
                   focusNode: _passwordFocusNode,
                   decoration: InputDecoration(labelText: 'Password'),
                   obscureText: true,
@@ -226,7 +226,7 @@ class _AuthCardState extends State<AuthCard> {
                 ),
                 if (_authMode == AuthMode.Signup)
                   ColoredTextField(
-                    primaryColor: Theme.of(context).primaryColor,
+                    primaryColor: primaryColor,
                     focusNode: _passwordConfirmationFocusNode,
                     enabled: _authMode == AuthMode.Signup,
                     decoration: InputDecoration(labelText: 'Confirm Password'),
@@ -256,7 +256,7 @@ class _AuthCardState extends State<AuthCard> {
                       ),
                       padding:
                           EdgeInsets.symmetric(horizontal: 30.0, vertical: 8.0),
-                      primary: Theme.of(context).primaryColor,
+                      primary: primaryColor,
                       onPrimary: Theme.of(context).colorScheme.onPrimary,
                     ),
                   ),
@@ -267,7 +267,7 @@ class _AuthCardState extends State<AuthCard> {
                   style: TextButton.styleFrom(
                     padding:
                         EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
-                    primary: Theme.of(context).primaryColor,
+                    primary: primaryColor,
                   ),
                 ),
               ],
