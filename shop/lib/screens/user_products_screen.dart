@@ -9,44 +9,55 @@ class UserProductsScreen extends StatelessWidget {
   static const routeName = "/user-products";
 
   Future<void> _refreshProducts(BuildContext context) async {
-    await Provider.of<Products>(context, listen: false).fetchProcuts();
+    await Provider.of<Products>(context, listen: false).fetchProcuts(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    final productsData = Provider.of<Products>(context);
-
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Your Products"),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () =>
-                  Navigator.of(context).pushNamed(EditProductScreen.routeName),
-            )
-          ],
-        ),
-        drawer: AppDrawer(),
-        body: SafeArea(
-          child: RefreshIndicator(
-            onRefresh: () => _refreshProducts(context),
-            child: Padding(
-              padding: EdgeInsets.all(8),
-              child: ListView.builder(
-                itemBuilder: (_, i) {
-                  final prod = productsData.items[i];
-                  return Column(
-                    children: [
-                      UserProductItem(prod.id, prod.title, prod.imageUrl),
-                      if (i != productsData.items.length - 1) Divider()
-                    ],
-                  );
-                },
-                itemCount: productsData.items.length,
-              ),
-            ),
-          ),
-        ));
+      appBar: AppBar(
+        title: const Text("Your Products"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () =>
+                Navigator.of(context).pushNamed(EditProductScreen.routeName),
+          )
+        ],
+      ),
+      drawer: AppDrawer(),
+      body: FutureBuilder(
+        future: _refreshProducts(context),
+        builder: (ctx, snapshot) =>
+            snapshot.connectionState == ConnectionState.waiting
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : SafeArea(
+                    child: RefreshIndicator(
+                      onRefresh: () => _refreshProducts(context),
+                      child: Consumer<Products>(
+                        builder: (ctx, productsData, _) => Padding(
+                          padding: EdgeInsets.all(8),
+                          child: ListView.builder(
+                            itemBuilder: (_, i) {
+                              final prod = productsData.items[i];
+                              return Column(
+                                children: [
+                                  UserProductItem(
+                                      prod.id, prod.title, prod.imageUrl),
+                                  if (i != productsData.items.length - 1)
+                                    Divider()
+                                ],
+                              );
+                            },
+                            itemCount: productsData.items.length,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+      ),
+    );
   }
 }

@@ -25,19 +25,21 @@ class Products with ChangeNotifier {
 
   Product findById(String id) => _items.firstWhere((item) => item.id == id);
 
-  Future<void> fetchProcuts() async {
+  Future<void> fetchProcuts([bool filterByUser = false]) async {
     try {
-      final response = await http.get(Uri.parse("$url.json?auth=$_authToken"));
+      final filterUrl =
+          filterByUser ? '&orderBy="creatorId"&equalTo="$_userId"' : "";
+      final response =
+          await http.get(Uri.parse('$url.json?auth=$_authToken$filterUrl'));
       final body = json.decode(response.body) as Map<String, dynamic>?;
       if (body == null) return;
 
       final favoriteResponse = await http.get(Uri.parse(
-          "${Config.serverUrl}/userFavorites/$_userId.json?auth=$_authToken"));
+          '${Config.serverUrl}/userFavorites/$_userId.json?auth=$_authToken'));
       final favoriteData =
           json.decode(favoriteResponse.body) as Map<String, dynamic>?;
 
       var _newItems = <Product>[];
-      print(favoriteData);
 
       body.forEach((id, data) => _newItems.add(
             Product(
@@ -60,7 +62,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) => http
-          .post(Uri.parse("$url.json?auth=$_authToken"), body: product.toJSON())
+          .post(Uri.parse("$url.json?auth=$_authToken"),
+              body: product.toJSON(_userId))
           .then((res) {
         final body = json.decode(res.body);
         product.id = body["name"];
@@ -76,7 +79,7 @@ class Products with ChangeNotifier {
     if (prodIndex >= 0) {
       await http.patch(
           Uri.parse("$url/${editedProduct.id}.json?auth=$_authToken"),
-          body: editedProduct.toJSON());
+          body: editedProduct.toJSON(_userId));
       _items[prodIndex] = editedProduct;
       notifyListeners();
     }

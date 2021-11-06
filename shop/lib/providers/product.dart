@@ -25,11 +25,12 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  String toJSON() => json.encode({
+  String toJSON(String creatorId) => json.encode({
         "title": title,
         "description": description,
         "price": price,
         "imageUrl": imageUrl,
+        "creatorId": creatorId,
       });
 
   Future<void> toggleFavorite(String token, String userId) {
