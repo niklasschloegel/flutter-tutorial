@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shop/models/http_exception.dart';
 import 'package:shop/providers/auth.dart';
 import 'package:shop/widgets/colored_textfield.dart';
+import 'package:shop/widgets/gradient_backdraw.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -18,19 +19,7 @@ class AuthScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Color.fromRGBO(215, 117, 255, 1).withOpacity(0.5),
-                  Color.fromRGBO(255, 188, 117, 1).withOpacity(0.9),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                stops: [0, 1],
-              ),
-            ),
-          ),
+          GradientBackdraw(),
           SingleChildScrollView(
             child: Container(
               height: deviceSize.height,
@@ -48,7 +37,7 @@ class AuthScreen extends StatelessWidget {
                         ..translate(-10.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Colors.deepOrange.shade900,
+                        color: Theme.of(context).colorScheme.secondary,
                         boxShadow: [
                           BoxShadow(
                             blurRadius: 8,
