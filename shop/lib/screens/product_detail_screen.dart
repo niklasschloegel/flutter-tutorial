@@ -78,6 +78,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ),
               ),
             ),
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: isShrink ? Colors.white : Colors.black,
+              ),
+              onPressed: () => Navigator.of(ctx).pop(),
+            ),
             actions: [
               Consumer<Product>(
                 builder: (_, p, __) => IconButton(
