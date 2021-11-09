@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/helpers/custom_route.dart';
 import 'package:shop/providers/auth.dart';
 import 'package:shop/providers/cart.dart';
 import 'package:shop/providers/product.dart';
@@ -19,7 +20,7 @@ class ProductItem extends StatelessWidget {
           value: product,
           child: GestureDetector(
             onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
+              CustomRoute(
                 builder: (ctx) => ChangeNotifierProvider<Product>.value(
                   value: product,
                   child: ProductDetailScreen(),

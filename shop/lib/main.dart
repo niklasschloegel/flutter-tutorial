@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/helpers/custom_route.dart';
 import 'package:shop/providers/auth.dart';
 import 'package:shop/providers/cart.dart';
 import 'package:shop/providers/orders.dart';
@@ -41,10 +42,19 @@ class MyApp extends StatelessWidget {
         builder: (ctx, auth, _) => MaterialApp(
           title: 'Flutter Demo',
           theme: ThemeData(
-            primaryColor: Colors.indigo,
-            accentColor: Colors.deepOrange,
-            fontFamily: 'Lato',
-          ),
+              primaryColor: Colors.indigo,
+              accentColor: Colors.deepOrange,
+              fontFamily: 'Lato',
+              pageTransitionsTheme: PageTransitionsTheme(
+                builders: {
+                  TargetPlatform.android: CustomPageTransitionBuilder(),
+                  TargetPlatform.iOS: CustomPageTransitionBuilder(),
+                  TargetPlatform.fuchsia: CustomPageTransitionBuilder(),
+                  TargetPlatform.linux: CustomPageTransitionBuilder(),
+                  TargetPlatform.macOS: CustomPageTransitionBuilder(),
+                  TargetPlatform.windows: CustomPageTransitionBuilder(),
+                },
+              )),
           home: auth.isAuthenticated
               ? ProductsOverviewScreen()
               : FutureBuilder(
