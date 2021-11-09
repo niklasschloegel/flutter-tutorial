@@ -4,7 +4,42 @@ import 'package:shop/providers/auth.dart';
 import 'package:shop/providers/cart.dart';
 import 'package:shop/providers/product.dart';
 
-class ProductDetailScreen extends StatelessWidget {
+class ProductDetailScreen extends StatefulWidget {
+  @override
+  _ProductDetailScreenState createState() => _ProductDetailScreenState();
+}
+
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
+  // Scroll controller is for changing the Icon color in the App Bar
+  // Source: https://stackoverflow.com/questions/53622598/changing-sliverappbar-title-color-in-flutter-application
+  late ScrollController _scrollController;
+  bool _lastStatus = true;
+
+  bool get isShrink =>
+      _scrollController.hasClients &&
+      _scrollController.offset > (300 - kToolbarHeight);
+
+  _scrollListener() {
+    if (isShrink != _lastStatus) {
+      setState(() {
+        _lastStatus = isShrink;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<Auth>(context, listen: false);
@@ -15,30 +50,6 @@ class ProductDetailScreen extends StatelessWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(product.title),
-        actions: [
-          Consumer<Product>(
-            builder: (_, p, __) => IconButton(
-              onPressed: () {
-                final token = auth.token;
-                final userId = auth.userId;
-                if (token == null || userId == null) return;
-
-                product.toggleFavorite(token, userId).catchError((_) {
-                  scaffMessenger.hideCurrentSnackBar();
-                  scaffMessenger.showSnackBar(
-                    SnackBar(
-                      content: Text("Could not change favorite state"),
-                    ),
-                  );
-                });
-              },
-              icon: Icon(p.isFavorite ? Icons.favorite : Icons.favorite_border),
-            ),
-          )
-        ],
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Provider.of<Cart>(context, listen: false)
@@ -48,27 +59,62 @@ class ProductDetailScreen extends StatelessWidget {
         },
         child: Icon(Icons.shopping_cart),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                height: 300,
-                width: double.infinity,
-                child: Hero(
-                  tag: product.id,
-                  child: Image.network(
-                    product.imageUrl,
-                    fit: BoxFit.cover,
-                  ),
+      body: NestedScrollView(
+        controller: _scrollController,
+        headerSliverBuilder: (ctx, innerBoxScrolled) => [
+          SliverAppBar(
+            onStretchTrigger: () async {
+              print("OVERSCROLLED");
+            },
+            expandedHeight: 300,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(product.title),
+              background: Hero(
+                tag: product.id,
+                child: Image.network(
+                  product.imageUrl,
+                  fit: BoxFit.cover,
                 ),
               ),
+            ),
+            actions: [
+              Consumer<Product>(
+                builder: (_, p, __) => IconButton(
+                  onPressed: () {
+                    final token = auth.token;
+                    final userId = auth.userId;
+                    if (token == null || userId == null) return;
+
+                    product.toggleFavorite(token, userId).catchError((_) {
+                      scaffMessenger.hideCurrentSnackBar();
+                      scaffMessenger.showSnackBar(
+                        SnackBar(
+                          content: Text("Could not change favorite state"),
+                        ),
+                      );
+                    });
+                  },
+                  icon: Icon(
+                    p.isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: isShrink ? Colors.white : Colors.red,
+                  ),
+                ),
+              )
+            ],
+          ),
+        ],
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
               SizedBox(height: 10),
-              Text(
-                "\$${product.price}",
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 20,
+              Center(
+                child: Text(
+                  "\$${product.price}",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 20,
+                  ),
                 ),
               ),
               SizedBox(height: 10),
