@@ -94,11 +94,32 @@ class _AuthCardState extends State<AuthCard>
   final _passwordFocusNode = FocusNode();
   final _passwordConfirmationFocusNode = FocusNode();
 
+  static const _ANIMATION_DURATION = Duration(milliseconds: 300);
+  static const _ANIMATION_CURVE = Curves.easeIn;
+  late AnimationController _controller;
+  late Animation<Offset> _slideAnimation;
+  late Animation<double> _opacityAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller =
+        AnimationController(vsync: this, duration: _ANIMATION_DURATION);
+
+    final curveAnimation =
+        CurvedAnimation(parent: _controller, curve: _ANIMATION_CURVE);
+    _slideAnimation = Tween<Offset>(begin: Offset(0, -0.5), end: Offset(0, 0))
+        .animate(curveAnimation);
+    _opacityAnimation =
+        Tween<double>(begin: 0, end: 1.0).animate(curveAnimation);
+  }
+
   @override
   void dispose() {
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
     _passwordConfirmationFocusNode.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -156,8 +177,10 @@ class _AuthCardState extends State<AuthCard>
   void _switchAuthMode() {
     if (_authMode == AuthMode.Login) {
       setState(() => _authMode = AuthMode.Signup);
+      _controller.forward();
     } else {
       setState(() => _authMode = AuthMode.Login);
+      _controller.reverse();
     }
   }
 
@@ -171,8 +194,8 @@ class _AuthCardState extends State<AuthCard>
       ),
       elevation: 8.0,
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeIn,
+        duration: _ANIMATION_DURATION,
+        curve: _ANIMATION_CURVE,
         height: _authMode == AuthMode.Signup ? 320 : 260,
         constraints:
             BoxConstraints(minHeight: _authMode == AuthMode.Signup ? 320 : 260),
@@ -216,21 +239,35 @@ class _AuthCardState extends State<AuthCard>
                     _authData['password'] = value ?? "";
                   },
                 ),
-                if (_authMode == AuthMode.Signup)
-                  ColoredTextField(
-                    primaryColor: primaryColor,
-                    focusNode: _passwordConfirmationFocusNode,
-                    enabled: _authMode == AuthMode.Signup,
-                    decoration: InputDecoration(labelText: 'Confirm Password'),
-                    obscureText: true,
-                    validator: _authMode == AuthMode.Signup
-                        ? (value) {
-                            if (value != _passwordController.text) {
-                              return 'Passwords do not match!';
-                            }
-                          }
-                        : null,
+                AnimatedContainer(
+                  duration: _ANIMATION_DURATION,
+                  curve: _ANIMATION_CURVE,
+                  constraints: BoxConstraints(
+                    minHeight: _authMode == AuthMode.Signup ? 60 : 0,
+                    maxHeight: _authMode == AuthMode.Signup ? 120 : 0,
                   ),
+                  child: FadeTransition(
+                    opacity: _opacityAnimation,
+                    child: SlideTransition(
+                      position: _slideAnimation,
+                      child: ColoredTextField(
+                        primaryColor: primaryColor,
+                        focusNode: _passwordConfirmationFocusNode,
+                        enabled: _authMode == AuthMode.Signup,
+                        decoration:
+                            InputDecoration(labelText: 'Confirm Password'),
+                        obscureText: true,
+                        validator: _authMode == AuthMode.Signup
+                            ? (value) {
+                                if (value != _passwordController.text) {
+                                  return 'Passwords do not match!';
+                                }
+                              }
+                            : null,
+                      ),
+                    ),
+                  ),
+                ),
                 SizedBox(
                   height: 20,
                 ),
