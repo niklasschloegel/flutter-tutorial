@@ -22,6 +22,7 @@ class GreatPlaces with ChangeNotifier {
   ) async {
     final address = await LocationHelper.getPlaceAddress(
         location.latitude, location.longitude);
+
     final updatedLocation = PlaceLocation(
       latitude: location.latitude,
       longitude: location.longitude,
