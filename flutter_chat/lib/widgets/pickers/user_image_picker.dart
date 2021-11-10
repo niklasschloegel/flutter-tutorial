@@ -59,16 +59,20 @@ class _UserImagePickerState extends State<UserImagePicker> {
     }
 
     final imagePicker = ImagePicker();
-    final file = await imagePicker.pickImage(source: imageSource);
-    if (file == null) return;
+    final file = await imagePicker.getImage(
+      source: imageSource,
+      imageQuality: 50,
+      maxWidth: 150,
+      preferredCameraDevice: CameraDevice.front,
+    );
+    if (file == null) {
+      print("file null");
+      return;
+    }
     final imgFile = File(file.path);
     setState(() => _pickedImage = imgFile);
     widget.onImagePicked(imgFile);
   }
-
-  _getImageProvider() => _pickedImage != null
-      ? FileImage(_pickedImage!)
-      : AssetImage("assets/images/defaultProfilePic.png");
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +81,10 @@ class _UserImagePickerState extends State<UserImagePicker> {
         CircleAvatar(
           radius: 40,
           backgroundColor: Colors.grey.shade900,
-          backgroundImage: _getImageProvider(),
+          backgroundImage: _pickedImage != null
+              ? FileImage(_pickedImage!) as ImageProvider
+              : AssetImage("assets/images/defaultProfilePic.png")
+                  as ImageProvider,
         ),
         TextButton.icon(
           icon: Icon(Icons.image),
