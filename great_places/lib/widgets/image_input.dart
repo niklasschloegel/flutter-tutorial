@@ -65,11 +65,21 @@ class _ImageInputState extends State<ImageInput> {
           alignment: Alignment.center,
         ),
         SizedBox(width: 10),
-        TextButton.icon(
-          onPressed: _takePicture,
-          icon: Icon(Icons.camera),
-          label: Text("Take Picture"),
-        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextButton.icon(
+              onPressed: _takePicture,
+              icon: Icon(Icons.camera),
+              label: Text("Take Picture"),
+            ),
+            TextButton.icon(
+              onPressed: _pickFromLibrary,
+              icon: Icon(Icons.image),
+              label: Text("Pick from Gallery"),
+            ),
+          ],
+        )
       ],
     );
   }
