@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat/widgets/chat/messages.dart';
@@ -6,8 +5,6 @@ import 'package:flutter_chat/widgets/chat/new_message.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({Key? key}) : super(key: key);
-
-  final _collectionPath = "chats/r9VCPxfQTQiPR8eIvDgl/messages";
 
   @override
   Widget build(BuildContext context) {

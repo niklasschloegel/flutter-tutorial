@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import 'message_bubble.dart';
 
 class Messages extends StatelessWidget {
   const Messages({Key? key}) : super(key: key);
@@ -24,8 +28,16 @@ class Messages extends StatelessWidget {
                 itemCount: length,
                 reverse: true,
                 itemBuilder: (ctx, index) {
-                  final msg = docs[index]["text"];
-                  return msg != null ? Text(msg) : Text("ERROR");
+                  final doc = docs[index];
+                  return MessageBubble(
+                    key: ValueKey(doc.id),
+                    text: doc["text"],
+                    userName: doc["username"],
+                    isMe: doc["userId"] ==
+                        (FirebaseAuth.instance.currentUser?.uid ?? false),
+                    dateString: DateFormat("dd.MM.yyyy - HH:mm").format(
+                        (doc["createdAt"] as Timestamp).toDate().toLocal()),
+                  );
                 },
               )
             : Center(
