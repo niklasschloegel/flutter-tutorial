@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_chat/screens/auth_screen.dart';
 import 'package:flutter_chat/screens/chat_screen.dart';
@@ -33,7 +34,11 @@ class FireChatApp extends StatelessWidget {
                   ),
                 ),
               ),
-              home: AuthScreen(),
+              home: StreamBuilder<User?>(
+                stream: FirebaseAuth.instance.authStateChanges(),
+                builder: (ctx, snapshot) =>
+                    snapshot.hasData ? ChatScreen() : AuthScreen(),
+              ),
             );
 
           return Center(

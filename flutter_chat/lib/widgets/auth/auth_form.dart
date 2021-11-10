@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
-  const AuthForm({Key? key}) : super(key: key);
+  final void Function(
+    String email,
+    String password,
+    String username,
+    bool isLogin,
+    BuildContext ctx,
+  ) onSubmit;
+  final bool isLoading;
+  const AuthForm({Key? key, required this.onSubmit, required this.isLoading})
+      : super(key: key);
 
   @override
   _AuthFormState createState() => _AuthFormState();
@@ -22,6 +31,13 @@ class _AuthFormState extends State<AuthForm> {
     if (isValid) {
       FocusScope.of(context).unfocus();
       currState.save();
+      widget.onSubmit(
+        _userEmail.trim(),
+        _userPw.trim(),
+        _userName.trim(),
+        _isLoginMode,
+        context,
+      );
     }
   }
 
@@ -75,18 +91,21 @@ class _AuthFormState extends State<AuthForm> {
                     obscureText: true,
                   ),
                   SizedBox(height: 12),
-                  ElevatedButton(
-                    onPressed: _trySubmit,
-                    child: Text(_isLoginMode ? "Login" : "Signup"),
-                  ),
-                  TextButton(
-                    onPressed: () => setState(
-                      () => _isLoginMode = !_isLoginMode,
+                  if (widget.isLoading) CircularProgressIndicator(),
+                  if (!widget.isLoading)
+                    ElevatedButton(
+                      onPressed: _trySubmit,
+                      child: Text(_isLoginMode ? "Login" : "Signup"),
                     ),
-                    child: Text(_isLoginMode
-                        ? "Create new account"
-                        : "I already have an account"),
-                  ),
+                  if (!widget.isLoading)
+                    TextButton(
+                      onPressed: () => setState(
+                        () => _isLoginMode = !_isLoginMode,
+                      ),
+                      child: Text(_isLoginMode
+                          ? "Create new account"
+                          : "I already have an account"),
+                    ),
                 ],
               ),
             ),
