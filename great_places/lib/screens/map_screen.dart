@@ -21,6 +21,30 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   LatLng? _pickedLocation;
 
+  LatLng get _initialLocationAsLatLng => LatLng(
+        widget.initialLocation.latitude,
+        widget.initialLocation.longitude,
+      );
+
+  Set<Marker> initMarkers() {
+    var pickedLoc = _pickedLocation;
+    if (pickedLoc == null && !widget.isSelecting)
+      return {
+        Marker(
+          markerId: MarkerId("m1"),
+          position: _initialLocationAsLatLng,
+        )
+      };
+    if (pickedLoc != null)
+      return {
+        Marker(
+          markerId: MarkerId("m1"),
+          position: pickedLoc,
+        )
+      };
+    return {};
+  }
+
   void _selectLocation(LatLng position) {
     setState(() => _pickedLocation = position);
   }
@@ -42,21 +66,11 @@ class _MapScreenState extends State<MapScreen> {
       ),
       body: GoogleMap(
         initialCameraPosition: CameraPosition(
-          target: LatLng(
-            widget.initialLocation.latitude,
-            widget.initialLocation.longitude,
-          ),
+          target: _initialLocationAsLatLng,
           zoom: 16,
         ),
         onTap: widget.isSelecting ? _selectLocation : null,
-        markers: _pickedLocation == null
-            ? {}
-            : {
-                Marker(
-                  markerId: MarkerId("m1"),
-                  position: _pickedLocation!,
-                ),
-              },
+        markers: initMarkers(),
       ),
     );
   }
