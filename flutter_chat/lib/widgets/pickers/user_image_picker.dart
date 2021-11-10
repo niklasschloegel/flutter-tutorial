@@ -6,7 +6,9 @@ import 'package:image_picker/image_picker.dart';
 enum ImagePickAction { camera, gallery, cancel }
 
 class UserImagePicker extends StatefulWidget {
-  const UserImagePicker({Key? key}) : super(key: key);
+  final void Function(File file) onImagePicked;
+  const UserImagePicker({Key? key, required this.onImagePicked})
+      : super(key: key);
 
   @override
   _UserImagePickerState createState() => _UserImagePickerState();
@@ -59,8 +61,14 @@ class _UserImagePickerState extends State<UserImagePicker> {
     final imagePicker = ImagePicker();
     final file = await imagePicker.pickImage(source: imageSource);
     if (file == null) return;
-    setState(() => _pickedImage = File(file.path));
+    final imgFile = File(file.path);
+    setState(() => _pickedImage = imgFile);
+    widget.onImagePicked(imgFile);
   }
+
+  _getImageProvider() => _pickedImage != null
+      ? FileImage(_pickedImage!)
+      : AssetImage("assets/images/defaultProfilePic.png");
 
   @override
   Widget build(BuildContext context) {
@@ -69,8 +77,7 @@ class _UserImagePickerState extends State<UserImagePicker> {
         CircleAvatar(
           radius: 40,
           backgroundColor: Colors.grey.shade900,
-          backgroundImage:
-              _pickedImage != null ? FileImage(_pickedImage!) : null,
+          backgroundImage: _getImageProvider(),
         ),
         TextButton.icon(
           icon: Icon(Icons.image),

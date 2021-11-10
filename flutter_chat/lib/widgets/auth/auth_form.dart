@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_chat/widgets/pickers/user_image_picker.dart';
 
@@ -23,10 +25,15 @@ class _AuthFormState extends State<AuthForm> {
   var _userEmail = "";
   var _userName = "";
   var _userPw = "";
+  File? _userImageFile;
+
+  void _pickedImage(File image) => this._userImageFile = image;
 
   void _trySubmit() {
     final currState = _formKey.currentState;
     if (currState == null) return;
+
+    if (_userImageFile == null) {}
 
     final isValid = currState.validate();
     if (isValid) {
@@ -55,7 +62,10 @@ class _AuthFormState extends State<AuthForm> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (!_isLoginMode) UserImagePicker(),
+                  if (!_isLoginMode)
+                    UserImagePicker(
+                      onImagePicked: _pickedImage,
+                    ),
                   TextFormField(
                     key: ValueKey("email"),
                     validator: (val) {
