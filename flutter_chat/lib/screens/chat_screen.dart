@@ -5,14 +5,20 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: 10,
-      itemBuilder: (ctx, i) {
-        return Container(
-          padding: EdgeInsets.all(8),
-          child: Text("Test"),
-        );
-      },
+    return Scaffold(
+      body: ListView.builder(
+        itemCount: 10,
+        itemBuilder: (ctx, i) {
+          return Container(
+            padding: EdgeInsets.all(8),
+            child: Text("Test"),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {},
+      ),
     );
   }
 }
