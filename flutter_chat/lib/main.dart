@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_chat/screens/auth_screen.dart';
 import 'package:flutter_chat/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,21 @@ class FireChatApp extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.done)
             return MaterialApp(
               title: "FireChat",
-              home: ChatScreen(),
+              themeMode: ThemeMode.dark,
+              theme: ThemeData.dark().copyWith(
+                colorScheme: ColorScheme.dark().copyWith(
+                  primary: Colors.lime,
+                  secondary: Colors.purple.shade200,
+                ),
+                elevatedButtonTheme: ElevatedButtonThemeData(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                ),
+              ),
+              home: AuthScreen(),
             );
 
           return Center(
