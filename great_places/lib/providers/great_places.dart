@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:great_places/helpers/db_helper.dart';
+import 'package:great_places/helpers/fs_helper.dart';
 import 'package:great_places/helpers/location_helper.dart';
 import 'package:great_places/models/place.dart';
 import 'package:uuid/uuid.dart';
@@ -26,12 +27,13 @@ class GreatPlaces with ChangeNotifier {
       longitude: location.longitude,
       address: address,
     );
+    final savedImage = await FsHelper.saveFile(image);
 
     final newPlace = Place(
       id: Uuid().v4(),
       title: title,
       location: updatedLocation,
-      image: image,
+      image: savedImage,
     );
     _items.add(newPlace);
     notifyListeners();
@@ -55,6 +57,7 @@ class GreatPlaces with ChangeNotifier {
     notifyListeners();
     try {
       await DBHelper.delete(_TABLE, Place.ID_KEY, id);
+      await FsHelper.removeFile(prevPlace.image);
     } catch (err) {
       print(err);
       _items.insert(prevPlaceIndex, prevPlace);
