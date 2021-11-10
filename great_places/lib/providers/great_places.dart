@@ -44,5 +44,22 @@ class GreatPlaces with ChangeNotifier {
         .map((dataMap) => Place.fromMap(dataMap))
         .whereType<Place>()
         .toList();
+    print("initting");
+    notifyListeners();
+  }
+
+  Future<void> deletePlace(String id) async {
+    final prevPlaceIndex = _items.indexWhere((element) => element.id == id);
+    final prevPlace = _items[prevPlaceIndex];
+    _items.removeAt(prevPlaceIndex);
+    notifyListeners();
+    try {
+      await DBHelper.delete(_TABLE, Place.ID_KEY, id);
+    } catch (err) {
+      print(err);
+      _items.insert(prevPlaceIndex, prevPlace);
+      notifyListeners();
+      throw err;
+    }
   }
 }
