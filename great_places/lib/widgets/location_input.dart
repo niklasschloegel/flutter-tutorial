@@ -15,6 +15,7 @@ class LocationInput extends StatefulWidget {
 
 class _LocationInputState extends State<LocationInput> {
   String? _previewImageUrl;
+  var _isLoading = false;
 
   void _showPreview(double lat, double lng) {
     final imageUrl = LocationHelper.generateLocationPreviewImageURL(
@@ -25,6 +26,7 @@ class _LocationInputState extends State<LocationInput> {
   }
 
   Future<void> _getCurrentLocation() async {
+    setState(() => _isLoading = true);
     try {
       final locationData = await Location().getLocation();
       final latitude = locationData.latitude;
@@ -36,6 +38,7 @@ class _LocationInputState extends State<LocationInput> {
     } catch (err) {
       print(err);
     }
+    setState(() => _isLoading = false);
   }
 
   Future<void> _selectOnMap() async {
@@ -52,6 +55,23 @@ class _LocationInputState extends State<LocationInput> {
     widget.onSelectPlace(selectedLocation.latitude, selectedLocation.longitude);
   }
 
+  Widget _buildLocationPreview() {
+    if (_isLoading)
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    if (_previewImageUrl == null)
+      return Text(
+        "No Location Chosen",
+        textAlign: TextAlign.center,
+      );
+    return Image.network(
+      _previewImageUrl!,
+      fit: BoxFit.cover,
+      width: double.infinity,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -63,16 +83,7 @@ class _LocationInputState extends State<LocationInput> {
           decoration: BoxDecoration(
             border: Border.all(width: 1, color: Colors.grey),
           ),
-          child: _previewImageUrl == null
-              ? Text(
-                  "No Location Chosen",
-                  textAlign: TextAlign.center,
-                )
-              : Image.network(
-                  _previewImageUrl!,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                ),
+          child: _buildLocationPreview(),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
