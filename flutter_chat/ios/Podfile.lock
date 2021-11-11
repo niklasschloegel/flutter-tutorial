@@ -144,7 +144,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
   GoogleUtilities: 684ee790a24f73ebb2d1d966e9711c203f2a4237
   GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
-  image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a
+  image_picker: 9aa50e1d8cdacdbed739e925b7eea16d014367e6
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   path_provider: d1e9807085df1f9cc9318206cd649dc0b76be3de
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58

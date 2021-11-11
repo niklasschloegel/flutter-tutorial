@@ -59,7 +59,7 @@ class _UserImagePickerState extends State<UserImagePicker> {
     }
 
     final imagePicker = ImagePicker();
-    final file = await imagePicker.getImage(
+    final file = await imagePicker.pickImage(
       source: imageSource,
       imageQuality: 50,
       maxWidth: 150,
@@ -82,7 +82,7 @@ class _UserImagePickerState extends State<UserImagePicker> {
           radius: 40,
           backgroundColor: Colors.grey.shade900,
           backgroundImage: _pickedImage != null
-              ? FileImage(_pickedImage!) as ImageProvider
+              ? FileImage(_pickedImage!)
               : AssetImage("assets/images/defaultProfilePic.png")
                   as ImageProvider,
         ),

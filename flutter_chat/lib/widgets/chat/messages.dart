@@ -29,10 +29,12 @@ class Messages extends StatelessWidget {
                 reverse: true,
                 itemBuilder: (ctx, index) {
                   final doc = docs[index];
+                  final doesContainImage = doc.data().containsKey("userImage");
                   return MessageBubble(
                     key: ValueKey(doc.id),
                     text: doc["text"],
                     userName: doc["username"],
+                    imageUrl: doesContainImage ? doc["userImage"] : null,
                     isMe: doc["userId"] ==
                         (FirebaseAuth.instance.currentUser?.uid ?? false),
                     dateString: DateFormat("dd.MM.yyyy - HH:mm").format(

@@ -21,6 +21,7 @@ class FireChatApp extends StatelessWidget {
             return MaterialApp(
               title: "FireChat",
               themeMode: ThemeMode.dark,
+              debugShowCheckedModeBanner: false,
               theme: ThemeData.dark().copyWith(
                 colorScheme: ColorScheme.dark().copyWith(
                   primary: Colors.lime,

@@ -21,12 +21,18 @@ class _NewMessageState extends State<NewMessage> {
         .collection("users")
         .doc(user.uid)
         .get();
-    FirebaseFirestore.instance.collection("chat").add({
+
+    final data = {
       "text": _enteredMessage.trim(),
       "createdAt": Timestamp.now(),
       "userId": user.uid,
       "username": userData["username"],
-    });
+    };
+
+    final containsImageUrl = userData.data()?.containsKey("image_url") ?? false;
+    if (containsImageUrl) data["userImage"] = userData["image_url"];
+
+    FirebaseFirestore.instance.collection("chat").add(data);
     _controller.clear();
   }
 
