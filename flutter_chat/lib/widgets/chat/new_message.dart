@@ -47,6 +47,8 @@ class _NewMessageState extends State<NewMessage> {
             child: TextField(
               textInputAction: TextInputAction.send,
               controller: _controller,
+              autocorrect: true,
+              enableSuggestions: true,
               decoration: InputDecoration(labelText: "Send message"),
               onChanged: (val) => setState(() => _enteredMessage = val),
               onSubmitted: (_) => _sendMessage(),

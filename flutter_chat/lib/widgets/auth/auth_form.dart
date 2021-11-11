@@ -76,6 +76,9 @@ class _AuthFormState extends State<AuthForm> {
                     },
                     onSaved: (val) => _userEmail = val ?? "",
                     keyboardType: TextInputType.emailAddress,
+                    autocorrect: false,
+                    textCapitalization: TextCapitalization.none,
+                    enableSuggestions: false,
                     decoration: InputDecoration(
                       labelText: "Email address",
                     ),
@@ -88,6 +91,9 @@ class _AuthFormState extends State<AuthForm> {
                           return "Please enter at least 4 characters";
                       },
                       onSaved: (val) => _userName = val ?? "",
+                      autocorrect: false,
+                      textCapitalization: TextCapitalization.none,
+                      enableSuggestions: true,
                       decoration: InputDecoration(
                         labelText: "Username",
                       ),

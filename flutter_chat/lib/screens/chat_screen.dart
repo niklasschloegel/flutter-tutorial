@@ -14,10 +14,10 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
+    super.initState();
     final fbm = FirebaseMessaging.instance;
     fbm.requestPermission();
     fbm.subscribeToTopic("chat");
-    super.initState();
   }
 
   @override
@@ -27,6 +27,7 @@ class _ChatScreenState extends State<ChatScreen> {
         title: Text("FireChat"),
         actions: [
           DropdownButton(
+            underline: Container(),
             icon: Icon(
               Icons.more_vert,
               color: Colors.white,
